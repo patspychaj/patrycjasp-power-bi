@@ -3,1207 +3,728 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marta Kowalski — Dashboard Design</title>
+<title>Patrycja Spychaj</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #F5F2ED;
-  --surface: #FFFFFF;
-  --ink: #18181A;
-  --muted: #888580;
-  --rule: #E4E0D8;
-  --accent: #D4581A;
-  --accent-pale: #FAF0E8;
-  --green: #2E7D52;
-  --blue: #1A4FD4;
-  --font-display: 'Fraunces', serif;
-  --font-body: 'Geist', sans-serif;
-  --r: 18px;
+  --bg:       #F8F7F4;
+  --surface:  #FFFFFF;
+  --ink:      #16151A;
+  --mid:      #72707A;
+  --faint:    #B8B5C0;
+  --rule:     #E6E3EC;
+  --teal:     #2A8C7A;
+  --teal-lt:  #EAF5F2;
+  --teal-mid: #C2E4DC;
+  --amber:    #C47B2B;
+  --amber-lt: #FDF3E7;
+  --violet:   #6B5CF0;
+  --violet-lt:#EEEAFD;
+  --rose:     #D4506A;
+  --rose-lt:  #FDEEF2;
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --r: 10px;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-
 body {
-  font-family: var(--font-body);
+  font-family: var(--display);
   background: var(--bg);
   color: var(--ink);
-  font-size: 15px;
-  line-height: 1.65;
-  cursor: none;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
+.wrapper { max-width: 1100px; margin: 0 auto; padding: 0 36px; }
 
-/* ── CURSOR ── */
-#cur {
-  pointer-events: none;
-  position: fixed; z-index: 9999;
-  top: 0; left: 0;
-  mix-blend-mode: multiply;
-  transition: transform .12s ease;
-}
-#cur-dot {
-  width: 8px; height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  position: absolute;
-  transform: translate(-50%,-50%);
-  transition: width .25s, height .25s, opacity .2s;
-}
-#cur-ring {
-  width: 40px; height: 40px;
-  border: 1.5px solid rgba(212,88,26,.35);
-  border-radius: 50%;
-  position: absolute;
-  transform: translate(-50%,-50%);
-  transition: width .3s, height .3s, border-color .3s, opacity .2s;
-}
-body:has(a:hover) #cur-ring,
-body:has(.proj-card:hover) #cur-ring { width: 60px; height: 60px; border-color: var(--accent); }
-
-/* ── NAV ── */
+/* NAV */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 22px 52px;
-  transition: background .3s, backdrop-filter .3s;
-}
-nav.solid {
-  background: rgba(245,242,237,.92);
-  backdrop-filter: blur(20px);
+  background: rgba(248,247,244,0.88);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--rule);
 }
-.logo {
-  font-family: var(--font-display);
-  font-size: 20px; font-weight: 400;
-  letter-spacing: -.02em;
-  color: var(--ink);
-  text-decoration: none;
+.nav-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 36px;
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
 }
-.logo sup {
-  font-size: 10px; font-style: italic;
-  color: var(--accent); vertical-align: super;
-  font-family: var(--font-display);
-}
-.nav-r { display: flex; align-items: center; gap: 32px; }
-.nav-r a {
-  font-size: 13px; font-weight: 400;
-  color: var(--muted); text-decoration: none;
-  letter-spacing: .01em;
-  transition: color .2s;
-}
-.nav-r a:hover { color: var(--ink); }
-.nav-pill {
-  padding: 9px 22px;
-  border: 1.5px solid var(--ink);
-  border-radius: 100px;
-  font-size: 13px; font-weight: 500;
-  color: var(--ink) !important;
-  transition: background .2s, color .2s !important;
-}
-.nav-pill:hover { background: var(--ink) !important; color: var(--bg) !important; }
-
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  padding: 160px 52px 80px;
-  display: grid;
-  grid-template-columns: 1fr 520px;
-  gap: 80px;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-/* subtle dot-grid bg */
-.hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(212,88,26,.12) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(ellipse 80% 80% at 60% 40%, black 20%, transparent 80%);
-  pointer-events: none;
-}
-
-.hero-eyebrow {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 11px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 28px;
-  animation: up .8s ease both;
-}
-.hero-eyebrow span {
-  display: inline-block; width: 28px; height: 1px; background: var(--accent);
-}
-
-h1 {
-  font-family: var(--font-display);
-  font-size: clamp(56px, 6vw, 90px);
-  font-weight: 300;
-  letter-spacing: -.04em;
-  line-height: .97;
-  margin-bottom: 32px;
-  animation: up .8s ease .1s both;
-}
-h1 em { font-style: italic; color: var(--accent); }
-h1 .outline {
-  -webkit-text-stroke: 1.5px var(--ink);
-  color: transparent;
-}
-
-.hero-body {
-  font-size: 16px; line-height: 1.75;
-  color: var(--muted); max-width: 460px;
-  margin-bottom: 44px;
-  animation: up .8s ease .2s both;
-}
-
-.hero-btns {
-  display: flex; align-items: center; gap: 16px;
-  animation: up .8s ease .3s both;
-}
-.btn-solid {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--ink); color: var(--bg);
-  padding: 14px 28px; border-radius: 100px;
-  font-size: 14px; font-weight: 500; text-decoration: none;
-  transition: background .2s, transform .2s;
-}
-.btn-solid:hover { background: var(--accent); transform: translateY(-2px); }
-.btn-ghost {
-  font-size: 14px; color: var(--muted); text-decoration: none;
-  transition: color .2s;
-}
-.btn-ghost:hover { color: var(--ink); }
-
-/* hero right — big design showcase card */
-.hero-showcase {
-  position: relative;
-  animation: up .9s ease .4s both;
-}
-.showcase-frame {
-  background: var(--surface);
-  border-radius: 24px;
-  border: 1px solid var(--rule);
-  overflow: hidden;
-  box-shadow: 0 32px 80px rgba(24,24,26,.12);
-}
-.sf-topbar {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--rule);
-  display: flex; align-items: center; gap: 12px;
-}
-.sf-dot { width: 10px; height: 10px; border-radius: 50%; }
-.sf-title { font-size: 12px; color: var(--muted); margin-left: auto; margin-right: auto; }
-
-/* dashboard mockup canvas */
-.db-canvas {
-  padding: 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  gap: 10px;
-  background: #F8F7F5;
-}
-
-.db-kpi {
-  background: white; border-radius: 12px; padding: 14px 16px;
-  border: 1px solid var(--rule);
-}
-.db-kpi.accent-card { background: var(--ink); }
-.db-kpi.accent-card .kv { color: white; }
-.db-kpi.accent-card .kl { color: rgba(255,255,255,.4); }
-.kv { font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: -.03em; }
-.kl { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 2px; }
-.kbadge {
-  display: inline-flex; align-items: center; gap: 3px;
-  font-size: 10px; font-weight: 500;
-  margin-top: 6px; padding: 2px 7px; border-radius: 100px;
-}
-.kbadge.up { background: rgba(46,125,82,.12); color: var(--green); }
-.kbadge.dn { background: rgba(212,88,26,.12); color: var(--accent); }
-
-.db-chart {
-  grid-column: span 2;
-  background: white; border-radius: 12px; padding: 14px 16px;
-  border: 1px solid var(--rule);
-}
-.db-chart.full { grid-column: span 3; }
-.chart-label {
-  font-size: 10px; text-transform: uppercase; letter-spacing: .07em;
-  color: var(--muted); margin-bottom: 10px;
-}
-
-/* bar chart in mockup */
-.bars-row { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
-.mb { flex: 1; border-radius: 4px 4px 0 0; }
-.mb.c1 { background: var(--ink); }
-.mb.c2 { background: rgba(24,24,26,.2); }
-.mb.c3 { background: rgba(212,88,26,.5); }
-.mb.ca { background: var(--accent); }
-
-/* sparkline */
-.sparkline { width: 100%; height: 48px; }
-
-/* area + line chart */
-.area-chart { width: 100%; height: 56px; }
-
-/* donut */
-.mini-donut-row { display: flex; align-items: center; gap: 14px; }
-.donut-leg { font-size: 10px; color: var(--muted); display: flex; flex-direction: column; gap: 5px; }
-.dl { display: flex; align-items: center; gap: 6px; }
-.dld { width: 8px; height: 8px; border-radius: 2px; }
-
-/* floating design annotation */
-.annotation {
-  position: absolute;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink);
-  white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(0,0,0,.08);
-  display: flex; align-items: center; gap: 7px;
-}
-.annotation::before {
-  content: '';
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent); flex-shrink: 0;
-}
-.ann-1 { top: -18px; right: -20px; animation: float1 4s ease-in-out infinite; }
-.ann-2 { bottom: 30px; left: -28px; animation: float2 5s ease-in-out infinite; }
-.ann-3 { bottom: -16px; right: 60px; animation: float1 3.5s ease-in-out .5s infinite; }
-
-@keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
-
-/* hero stats row */
-.hero-stats-row {
-  display: flex; gap: 0;
-  margin-top: 60px; padding-top: 40px;
-  border-top: 1px solid var(--rule);
-  animation: up .8s ease .5s both;
-}
-.hstat {
-  flex: 1; padding-right: 32px; margin-right: 32px;
-  border-right: 1px solid var(--rule);
-}
-.hstat:last-child { border-right: none; }
-.hstat-n {
-  font-family: var(--font-display);
-  font-size: 40px; font-weight: 300; letter-spacing: -.04em;
-}
-.hstat-l { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-/* ── MARQUEE ── */
-.marquee {
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  padding: 14px 0; overflow: hidden;
-}
-.mq-track {
-  display: flex; gap: 56px; width: max-content;
-  animation: mq 20s linear infinite;
-}
-.mq-item {
-  font-family: var(--font-display);
-  font-size: 15px; font-weight: 300; font-style: italic;
-  color: var(--muted);
-  white-space: nowrap; display: flex; align-items: center; gap: 56px;
-}
-.mq-item::after { content: '✦'; font-style: normal; font-size: 9px; color: var(--accent); }
-@keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-/* ── SECTION COMMONS ── */
-.section { padding: 120px 52px; }
-.eyebrow {
-  font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 14px;
-  display: flex; align-items: center; gap: 10px;
-}
-.eyebrow span { display: inline-block; width: 20px; height: 1px; background: var(--accent); }
-.section-h {
-  font-family: var(--font-display);
-  font-size: clamp(38px, 3.8vw, 58px);
-  font-weight: 300; letter-spacing: -.04em; line-height: 1.08;
-}
-.section-sub {
-  font-size: 16px; color: var(--muted); line-height: 1.75;
-  max-width: 520px; margin-top: 16px;
-}
-
-/* ── PHILOSOPHY ── */
-.philosophy-grid {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 1px; background: var(--rule);
-  border-radius: var(--r); overflow: hidden;
-  margin-top: 64px; border: 1px solid var(--rule);
-}
-.ph-cell {
-  background: var(--bg); padding: 40px 36px;
-  transition: background .25s;
-}
-.ph-cell:hover { background: var(--surface); }
-.ph-num {
-  font-family: var(--font-display);
-  font-size: 56px; font-weight: 300; font-style: italic;
-  color: var(--rule); line-height: 1; margin-bottom: 24px;
-  transition: color .25s;
-}
-.ph-cell:hover .ph-num { color: var(--accent); }
-.ph-title {
-  font-family: var(--font-display);
-  font-size: 22px; font-weight: 300; margin-bottom: 10px;
-}
-.ph-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-/* ── WORK SECTION ── */
-.work-header {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  margin-bottom: 60px;
-}
-.view-all {
-  font-size: 13px; color: var(--muted); text-decoration: none;
-  padding-bottom: 2px; border-bottom: 1px solid var(--rule);
-  transition: color .2s, border-color .2s;
-}
-.view-all:hover { color: var(--ink); border-color: var(--ink); }
-
-/* project cards */
-.proj-card {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  cursor: none;
-  transition: box-shadow .35s, transform .35s;
-}
-.proj-card:hover {
-  box-shadow: 0 40px 80px rgba(24,24,26,.11);
-  transform: translateY(-5px);
-}
-
-/* FEATURED card — large horizontal */
-.proj-card.featured {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  min-height: 520px;
-}
-
-.proj-visual {
-  position: relative; overflow: hidden;
-  background: #EEE9E1;
-}
-.proj-visual.dark { background: #1C1C1E; }
-.proj-visual.blue { background: #EBF0FA; }
-.proj-visual.green { background: #E8F4ED; }
-
-/* full dashboard preview in each card */
-.pv-frame {
-  position: absolute; inset: 20px;
-  background: var(--surface);
-  border-radius: 14px;
-  border: 1px solid var(--rule);
-  overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,.1);
-  display: flex; flex-direction: column;
-}
-.pv-bar {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rule);
-  display: flex; align-items: center; gap: 6px;
-  background: var(--surface);
-  flex-shrink: 0;
-}
-.pvb-dot { width: 8px; height: 8px; border-radius: 50%; }
-.pv-sidebar {
-  position: absolute; left: 0; top: 40px; bottom: 0;
-  width: 44px; background: #FAFAF9;
-  border-right: 1px solid var(--rule);
-  display: flex; flex-direction: column; align-items: center;
-  padding: 14px 0; gap: 16px;
-}
-.pv-sicon {
-  width: 22px; height: 22px; border-radius: 6px;
-  background: var(--rule);
-}
-.pv-sicon.active { background: var(--accent); }
-
-.pv-content {
-  flex: 1; margin-left: 44px; padding: 14px;
-  display: flex; flex-direction: column; gap: 9px;
-  overflow: hidden;
-}
-
-/* design annotations floating over card */
-.design-chip {
-  position: absolute; z-index: 10;
-  background: var(--ink); color: white;
-  font-size: 10px; font-weight: 500; letter-spacing: .03em;
-  padding: 6px 12px; border-radius: 100px;
-  white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.2);
-}
-.dc-accent { background: var(--accent); }
-.dc-green { background: var(--green); }
-.dc-blue { background: var(--blue); }
-
-/* ux annotation lines */
-.ux-line {
-  position: absolute; z-index: 5;
-  border: 1px dashed rgba(212,88,26,.4);
-  pointer-events: none;
-}
-.ux-dot {
-  position: absolute; z-index: 6;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
-  background: white;
-  transform: translate(-50%,-50%);
-}
-
-.proj-info {
-  padding: 44px 48px;
-  display: flex; flex-direction: column; justify-content: center;
-}
-
-.proj-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.ptag {
-  font-size: 11px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
-  padding: 4px 12px; border-radius: 100px; border: 1.5px solid var(--rule);
-  color: var(--muted); transition: border-color .2s, color .2s;
-}
-.ptag.filled { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
-
-.proj-title {
-  font-family: var(--font-display);
-  font-size: 32px; font-weight: 300; letter-spacing: -.03em;
-  line-height: 1.15; margin-bottom: 14px;
-}
-.proj-desc { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 28px; }
-
-/* design decisions list */
-.design-decisions { margin-bottom: 32px; }
-.dd-label {
-  font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 14px;
-  display: flex; align-items: center; gap: 8px;
-}
-.dd-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
-
-.dd-item {
-  display: flex; gap: 12px; align-items: flex-start;
-  padding: 10px 0; border-bottom: 1px solid var(--rule);
-}
-.dd-item:last-child { border-bottom: none; }
-.dd-icon {
-  width: 28px; height: 28px; border-radius: 8px;
-  background: var(--accent-pale);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; flex-shrink: 0; margin-top: 1px;
-}
-.dd-text { font-size: 13px; color: var(--ink); line-height: 1.55; }
-.dd-text strong { font-weight: 500; display: block; margin-bottom: 1px; }
-.dd-text span { color: var(--muted); font-size: 12px; }
-
-.proj-link {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 14px; font-weight: 500;
+.nav-logo {
+  font-family: var(--mono); font-size: 13px;
   color: var(--ink); text-decoration: none;
-  padding-bottom: 3px; border-bottom: 1.5px solid var(--ink);
-  transition: color .2s, border-color .2s;
-  align-self: flex-start;
-}
-.proj-link:hover { color: var(--accent); border-color: var(--accent); }
-
-/* GRID 2-col cards */
-.cards-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-.proj-card.compact .proj-visual { height: 320px; position: relative; }
-.proj-card.compact .proj-info { padding: 28px 32px; }
-.proj-card.compact .proj-title { font-size: 24px; }
-.proj-card.compact .proj-desc { font-size: 13px; }
-
-/* ── PROCESS SECTION ── */
-.process-section { background: var(--ink); }
-.process-section .eyebrow { color: rgba(212,88,26,.8); }
-.process-section .eyebrow span { background: rgba(212,88,26,.8); }
-.process-section .section-h { color: white; }
-.process-section .section-sub { color: rgba(255,255,255,.4); }
-
-.process-timeline {
-  display: grid; grid-template-columns: repeat(5, 1fr);
-  gap: 0; margin-top: 72px;
-  position: relative;
-}
-.process-timeline::before {
-  content: '';
-  position: absolute; top: 28px; left: 10%; right: 10%;
-  height: 1px; background: rgba(255,255,255,.1);
-}
-
-.pt-step {
-  padding: 0 20px;
-  text-align: center;
-  position: relative;
-}
-.pt-num {
-  width: 56px; height: 56px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.15);
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px;
-  font-family: var(--font-display); font-size: 20px; font-weight: 300; font-style: italic;
-  color: rgba(255,255,255,.4);
-  background: var(--ink);
-  position: relative; z-index: 1;
-  transition: border-color .25s, color .25s, background .25s;
-}
-.pt-step:hover .pt-num {
-  border-color: var(--accent); color: white; background: var(--accent);
-}
-.pt-title {
-  font-size: 14px; font-weight: 500; color: white;
-  margin-bottom: 8px;
-}
-.pt-body { font-size: 12px; color: rgba(255,255,255,.35); line-height: 1.6; }
-
-/* ── TOOLS ── */
-.tools-row {
-  display: flex; flex-wrap: wrap; gap: 10px;
-  margin-top: 56px;
-}
-.tool-pill {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 20px; border-radius: 100px;
-  border: 1px solid var(--rule); background: var(--surface);
-  font-size: 13px; font-weight: 400; color: var(--ink);
-  transition: border-color .2s, box-shadow .2s;
 }
-.tool-pill:hover { border-color: var(--ink); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
-.tool-icon { font-size: 16px; }
+.nav-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+.nav-links { display: flex; gap: 4px; list-style: none; }
+.nav-links a {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em;
+  color: var(--mid); text-decoration: none;
+  padding: 6px 12px; border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-links a:hover { background: var(--teal-lt); color: var(--teal); }
 
-/* ── TESTIMONIAL ── */
-.testi-section { background: var(--accent-pale); }
-.testi-card {
-  background: var(--surface); border-radius: 24px;
-  padding: 56px 64px; border: 1px solid rgba(212,88,26,.1);
-  max-width: 760px; margin: 56px auto 0;
+/* HERO */
+.hero-wrap { position: relative; overflow: hidden; }
+.hero-blob {
+  position: absolute; top: 60px; right: -60px;
+  width: 560px; height: 560px; pointer-events: none;
+  background: radial-gradient(ellipse at 60% 40%, rgba(42,140,122,0.10) 0%, transparent 65%);
 }
-.testi-quote {
-  font-family: var(--font-display);
-  font-size: 26px; font-weight: 300; font-style: italic;
-  letter-spacing: -.02em; line-height: 1.45;
-  color: var(--ink); margin-bottom: 32px;
+.hero {
+  padding: 128px 0 88px;
+  display: grid; grid-template-columns: 1fr 340px; gap: 64px;
+  align-items: start; position: relative; z-index: 1;
 }
-.testi-quote::before { content: '\201C'; color: var(--accent); }
-.testi-quote::after  { content: '\201D'; color: var(--accent); }
-.testi-author { display: flex; align-items: center; gap: 16px; }
-.ta-avatar {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--rule); display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 22px;
+  animation: up 0.7s ease both;
 }
-.ta-name { font-weight: 500; font-size: 14px; }
-.ta-role { font-size: 12px; color: var(--muted); }
-
-/* ── CONTACT ── */
-.contact-split {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 80px; align-items: center;
+.hero-eyebrow::before { content:''; width:20px; height:1.5px; background:var(--teal); }
+.hero-name {
+  font-size: clamp(44px, 5vw, 68px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 0.95;
+  color: var(--ink); margin-bottom: 18px;
+  animation: up 0.7s ease 0.07s both;
 }
-.contact-h {
-  font-family: var(--font-display);
-  font-size: clamp(44px, 4.5vw, 68px);
-  font-weight: 300; letter-spacing: -.04em; line-height: 1.05;
-  margin: 14px 0 20px;
+.hero-name .name-accent { color: var(--teal); }
+.hero-role {
+  font-family: var(--mono); font-size: 13px; font-weight: 300;
+  color: var(--mid); margin-bottom: 28px;
+  animation: up 0.7s ease 0.13s both;
 }
-.contact-h em { font-style: italic; color: var(--accent); }
-.contact-form { display: flex; flex-direction: column; gap: 14px; }
-.cf-field {
-  display: flex; flex-direction: column; gap: 6px;
-}
-.cf-field label { font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-.cf-field input, .cf-field textarea {
-  padding: 14px 18px; border-radius: 12px;
-  border: 1.5px solid var(--rule); background: var(--surface);
-  font-family: var(--font-body); font-size: 14px; color: var(--ink);
-  outline: none; resize: none;
-  transition: border-color .2s;
-}
-.cf-field input:focus, .cf-field textarea:focus { border-color: var(--ink); }
-
-/* ── FOOTER ── */
-footer {
-  padding: 28px 52px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid var(--rule);
-  font-size: 12px; color: var(--muted);
-}
-.footer-links { display: flex; gap: 24px; }
-.footer-links a { color: var(--muted); text-decoration: none; transition: color .2s; }
-.footer-links a:hover { color: var(--ink); }
-
-/* ── ANIMATIONS ── */
-@keyframes up {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+.hero-desc {
+  font-size: 15px; font-weight: 400; line-height: 1.75;
+  color: var(--mid); max-width: 500px;
+  animation: up 0.7s ease 0.19s both;
 }
 
-.reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity .7s ease, transform .7s ease;
+/* spec card */
+.spec-card {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--r); overflow: hidden;
+  box-shadow: 0 4px 24px rgba(22,21,26,0.05);
+  animation: up 0.7s ease 0.27s both;
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.spec-topbar {
+  padding: 11px 16px; border-bottom: 1px solid var(--teal-mid);
+  background: var(--teal-lt); display: flex; align-items: center; gap: 6px;
+}
+.spec-topbar-dot { width: 8px; height: 8px; border-radius: 50%; }
+.spec-topbar-label {
+  font-family: var(--mono); font-size: 11px; color: var(--teal);
+  margin: 0 auto; letter-spacing: 0.04em;
+}
+.spec-row {
+  display: flex; border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 12px;
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-key {
+  width: 90px; flex-shrink: 0; padding: 9px 14px;
+  color: var(--faint); border-right: 1px solid var(--rule);
+  font-size: 10px; display: flex; align-items: center;
+}
+.spec-val { padding: 9px 14px; color: var(--ink); display: flex; align-items: center; }
+.spec-pill {
+  padding: 2px 8px; border-radius: 4px; font-size: 10px;
+  background: var(--teal-lt); color: var(--teal);
+}
 
-/* ── MISC ── */
-.divider { height: 1px; background: var(--rule); margin: 0 52px; }
+/* DIVIDER */
+.divider { height: 1px; background: var(--rule); }
 
-/* color swatches for process step */
-.color-row { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
-.cswatch { width: 18px; height: 18px; border-radius: 50%; }
+/* SECTION */
+.section { padding: 80px 0; }
+.section-head { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+.section-num {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--teal); background: var(--teal-lt);
+  padding: 3px 8px; border-radius: 4px; letter-spacing: 0.04em;
+}
+.section-title { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.section-line { flex: 1; height: 1px; background: var(--rule); }
+
+/* WORK GRID */
+.work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.work-card {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  padding: 28px; text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  position: relative; overflow: hidden;
+}
+.work-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--violet));
+  opacity: 0; transition: opacity 0.2s;
+}
+.work-card:hover { box-shadow: 0 8px 32px rgba(22,21,26,0.08); transform: translateY(-2px); border-color: var(--teal-mid); }
+.work-card:hover::after { opacity: 1; }
+
+.work-card.featured {
+  grid-column: span 2; display: grid;
+  grid-template-columns: 1fr 1fr; gap: 0; padding: 0;
+}
+.work-card.featured::after { right: auto; bottom: 0; width: 3px; height: 100%; top: 0; border-radius: 0; background: linear-gradient(180deg, var(--teal), var(--violet)); }
+.fc-left { padding: 32px; display: flex; flex-direction: column; }
+.fc-right {
+  background: var(--teal-lt); border-left: 1px solid var(--teal-mid);
+  padding: 20px; display: flex; align-items: center; justify-content: center;
+}
+
+.card-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+}
+.card-title { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 10px; line-height: 1.3; }
+.card-desc { font-size: 13px; color: var(--mid); line-height: 1.7; flex: 1; margin-bottom: 20px; }
+.card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+.card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.ctag {
+  font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 4px;
+  background: var(--teal-lt); color: var(--teal); border: 1px solid var(--teal-mid);
+}
+.ctag.am { background: var(--amber-lt); color: var(--amber); border-color: #EDD5A8; }
+.ctag.vi { background: var(--violet-lt); color: var(--violet); border-color: #C8C0F8; }
+.card-arrow { font-family: var(--mono); font-size: 14px; color: var(--faint); transition: color 0.15s, transform 0.15s; }
+.work-card:hover .card-arrow { color: var(--teal); transform: translateX(4px); }
+
+/* db mockup */
+.db-mock { width: 100%; background: white; border: 1px solid var(--teal-mid); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 16px rgba(42,140,122,0.1); }
+.db-topbar { height: 30px; background: var(--teal-lt); border-bottom: 1px solid var(--teal-mid); padding: 0 12px; display: flex; align-items: center; gap: 6px; }
+.db-d { width: 7px; height: 7px; border-radius: 50%; }
+.db-title { font-family: var(--mono); font-size: 10px; color: var(--teal); margin: 0 auto; }
+.db-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.db-krow { display: flex; gap: 6px; }
+.db-k { flex: 1; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; }
+.db-kv { font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: -0.03em; }
+.db-kl { font-size: 9px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.db-chart { border: 1px solid var(--rule); border-radius: 6px; padding: 10px; display: flex; align-items: flex-end; gap: 4px; height: 54px; }
+.dbr { flex: 1; border-radius: 2px 2px 0 0; background: var(--rule); }
+.dbr.hi { background: var(--teal); }
+.dbr.md { background: var(--teal-mid); }
+
+/* VISUALS */
+.visuals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.visual-card {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  padding: 24px; display: flex; flex-direction: column;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.visual-card:hover { box-shadow: 0 6px 24px rgba(22,21,26,0.07); transform: translateY(-2px); }
+.visual-preview {
+  height: 96px; border-radius: 8px; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.vp-t { background: var(--teal-lt); }
+.vp-v { background: var(--violet-lt); }
+.vp-a { background: var(--amber-lt); }
+.visual-name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 6px; }
+.visual-desc { font-size: 12px; color: var(--mid); line-height: 1.65; flex: 1; }
+.vtag { display: inline-flex; margin-top: 12px; font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 4px; align-self: flex-start; }
+.vtag-t { background: var(--teal-lt); color: var(--teal); }
+.vtag-v { background: var(--violet-lt); color: var(--violet); }
+.vtag-a { background: var(--amber-lt); color: var(--amber); }
+
+/* lollipop */
+.lol-wrap { display: flex; align-items: flex-end; gap: 7px; padding: 8px 14px; width: 100%; height: 100%; }
+.lol { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
+.lol-s { width: 1.5px; background: var(--teal); }
+.lol-d { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* heatmap */
+.hm-wrap { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; padding: 10px; width: 100%; }
+.hm-c { aspect-ratio: 1; border-radius: 2px; }
+
+/* waterfall */
+.wf-wrap { display: flex; align-items: flex-end; gap: 4px; padding: 10px; width: 100%; height: 100%; }
+.wf-b { flex: 1; border-radius: 2px 2px 0 0; }
+
+/* small multiples */
+.sm-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 8px; width: 100%; height: 100%; }
+.sm-p { background: white; border: 1px solid var(--rule); border-radius: 5px; padding: 6px; }
+.sm-l { font-family: var(--mono); font-size: 8px; color: var(--faint); margin-bottom: 3px; }
+.sm-b-row { display: flex; align-items: flex-end; gap: 2px; height: 26px; }
+.sm-b { flex: 1; border-radius: 1px 1px 0 0; }
+
+/* bullet */
+.bullet-wrap { display: flex; flex-direction: column; gap: 10px; padding: 12px 16px; width: 100%; }
+.bullet-row { display: flex; flex-direction: column; gap: 4px; }
+.bullet-lbl { font-family: var(--mono); font-size: 9px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.06em; }
+.bullet-track { height: 12px; background: var(--amber-lt); border-radius: 2px; position: relative; }
+.bullet-fill { height: 100%; border-radius: 2px; }
+.bullet-mark { position: absolute; top: 1px; width: 2px; height: 10px; background: var(--amber); border-radius: 1px; }
+
+/* FUNCTIONS */
+.fn-list { border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; background: var(--surface); }
+.fn-item {
+  display: grid; grid-template-columns: 44px 1fr auto auto;
+  align-items: center; border-bottom: 1px solid var(--rule);
+  text-decoration: none; color: inherit; transition: background 0.15s;
+}
+.fn-item:last-child { border-bottom: none; }
+.fn-item:hover { background: var(--teal-lt); }
+.fn-item:hover .fn-arr { opacity: 1; color: var(--teal); }
+.fn-item:hover .fn-nm { color: var(--teal); }
+.fn-no { font-family: var(--mono); font-size: 10px; color: var(--faint); padding: 16px; border-right: 1px solid var(--rule); align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.fn-nm { font-family: var(--mono); font-size: 13px; padding: 16px 20px; color: var(--ink); display: flex; align-items: center; gap: 10px; transition: color 0.15s; }
+.fb { font-size: 10px; padding: 2px 7px; border-radius: 4px; }
+.fb-d { background: var(--teal-lt); color: var(--teal); }
+.fb-p { background: var(--violet-lt); color: var(--violet); }
+.fb-y { background: var(--amber-lt); color: var(--amber); }
+.fn-de { font-size: 13px; color: var(--mid); padding: 16px 20px; line-height: 1.5; }
+.fn-arr { font-family: var(--mono); font-size: 13px; color: var(--faint); padding: 16px 20px; opacity: 0; transition: opacity 0.15s, color 0.15s; }
+
+/* OTHER */
+.other-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.other-card {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  padding: 28px; text-decoration: none; color: inherit; display: flex; flex-direction: column;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.other-card:hover { box-shadow: 0 6px 24px rgba(22,21,26,0.07); transform: translateY(-2px); }
+.other-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 16px; flex-shrink: 0; }
+.oi-t { background: var(--teal-lt); }
+.oi-a { background: var(--amber-lt); }
+.oi-v { background: var(--violet-lt); }
+.oi-r { background: var(--rose-lt); }
+.other-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.other-desc { font-size: 13px; color: var(--mid); line-height: 1.65; flex: 1; }
+.other-link { margin-top: 16px; font-family: var(--mono); font-size: 11px; color: var(--faint); transition: color 0.15s; }
+.other-card:hover .other-link { color: var(--teal); }
+
+/* ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+.about-text { font-size: 15px; color: var(--mid); line-height: 1.8; }
+.about-text p + p { margin-top: 16px; }
+.about-text a { color: var(--teal); text-decoration: none; }
+.about-text a:hover { text-decoration: underline; }
+.stack-group { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.stack-group:first-child { border-top: 1px solid var(--rule); }
+.stack-group-lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+.stack-items { display: flex; flex-wrap: wrap; gap: 6px; }
+.si { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--rule); border-radius: 5px; background: var(--surface); color: var(--mid); transition: border-color 0.15s, color 0.15s; }
+.si:hover { border-color: var(--teal-mid); color: var(--teal); }
+
+/* CONTACT */
+.contact-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.cc {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  padding: 24px 28px; text-decoration: none; color: inherit;
+  display: flex; align-items: center; gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+.cc:hover { box-shadow: 0 6px 20px rgba(22,21,26,0.07); transform: translateY(-2px); border-color: var(--teal-mid); }
+.cc-ico { width: 38px; height: 38px; border-radius: 9px; background: var(--teal-lt); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 13px; color: var(--teal); flex-shrink: 0; }
+.cc-lbl { font-family: var(--mono); font-size: 10px; color: var(--faint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+.cc-val { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.cc-arr { font-family: var(--mono); font-size: 13px; color: var(--faint); margin-left: auto; transition: color 0.15s, transform 0.15s; }
+.cc:hover .cc-arr { color: var(--teal); transform: translateX(3px); }
+
+/* FOOTER */
+footer { padding: 28px 0; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; }
+.fl { font-family: var(--mono); font-size: 11px; color: var(--faint); display: flex; align-items: center; gap: 8px; }
+.fl-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+.fr { display: flex; gap: 20px; }
+.fr a { font-family: var(--mono); font-size: 11px; color: var(--faint); text-decoration: none; transition: color 0.15s; }
+.fr a:hover { color: var(--teal); }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+.back-top {
+  position: fixed; bottom: 28px; right: 36px; z-index: 50;
+  font-family: var(--mono); font-size: 11px; color: var(--teal);
+  background: var(--teal-lt); border: 1px solid var(--teal-mid);
+  padding: 7px 13px; border-radius: 6px; text-decoration: none;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+}
+.back-top.visible { opacity: 1; pointer-events: all; }
+.back-top:hover { transform: translateY(-2px); }
 </style>
 </head>
 <body>
 
-<!-- Cursor -->
-<div id="cur"><div id="cur-dot"></div><div id="cur-ring"></div></div>
-
-<!-- NAV -->
-<nav id="nav">
-  <a href="#" class="logo">marta<sup>k</sup></a>
-  <div class="nav-r">
-    <a href="#work">Work</a>
-    <a href="#process">Process</a>
-    <a href="#about">About</a>
-    <a href="#contact" class="nav-pill">Get in touch</a>
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo"><div class="nav-logo-dot"></div>patrycja spychaj</a>
+    <ul class="nav-links">
+      <li><a href="#dashboards">dashboards</a></li>
+      <li><a href="#visuals">custom visuals</a></li>
+      <li><a href="#functions">functions</a></li>
+      <li><a href="#other">other</a></li>
+      <li><a href="#about">about</a></li>
+    </ul>
   </div>
 </nav>
 
-<!-- ══ HERO ══ -->
-<section class="hero">
-  <div>
-    <div class="hero-eyebrow"><span></span>Power BI · UX/UI Design</div>
-    <h1>Dashboard<br>design that<br><em>guides</em> <span class="outline">users</span></h1>
-    <p class="hero-body">I don't just build dashboards — I design visual systems where every color, spacing decision, and interaction serves one goal: making data instantly understandable.</p>
-    <div class="hero-btns">
-      <a href="#work" class="btn-solid">See the work <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a href="#process" class="btn-ghost">How I work →</a>
-    </div>
-    <div class="hero-stats-row">
-      <div class="hstat"><div class="hstat-n">48+</div><div class="hstat-l">Dashboards shipped</div></div>
-      <div class="hstat"><div class="hstat-n">~60%</div><div class="hstat-l">Avg. decision time↓</div></div>
-      <div class="hstat"><div class="hstat-n">12</div><div class="hstat-l">Industries</div></div>
-    </div>
-  </div>
-
-  <!-- Hero showcase widget -->
-  <div class="hero-showcase">
-    <div class="showcase-frame">
-      <div class="sf-topbar">
-        <div class="sf-dot" style="background:#FF5F57"></div>
-        <div class="sf-dot" style="background:#FFBD2E"></div>
-        <div class="sf-dot" style="background:#28CA41"></div>
-        <div class="sf-title">Executive Overview · FY2025</div>
+<!-- HERO -->
+<div class="hero-wrap">
+  <div class="hero-blob"></div>
+  <div class="wrapper">
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow">portfolio · data & analytics</div>
+        <h1 class="hero-name">Patrycja<br><span class="name-accent">Spychaj</span></h1>
+        <div class="hero-role">// data analyst · Power BI developer · Warsaw, PL</div>
+        <p class="hero-desc">I work with data — building dashboards, custom visuals, and automation tools. This page documents what I've made: how it works, what decisions went into it, and where you can find the code.</p>
       </div>
-      <div class="db-canvas">
-        <div class="db-kpi accent-card">
-          <div class="kl">Revenue</div>
-          <div class="kv">€8.3M</div>
-          <div class="kbadge up">↑ 18.4%</div>
+      <div class="spec-card">
+        <div class="spec-topbar">
+          <div class="spec-topbar-dot" style="background:#2A8C7A"></div>
+          <div class="spec-topbar-dot" style="background:var(--teal-mid)"></div>
+          <div class="spec-topbar-dot" style="background:var(--rule)"></div>
+          <div class="spec-topbar-label">profile.json</div>
         </div>
-        <div class="db-kpi">
-          <div class="kl">Orders</div>
-          <div class="kv">4,291</div>
-          <div class="kbadge up">↑ 9.1%</div>
-        </div>
-        <div class="db-kpi">
-          <div class="kl">Avg. Order</div>
-          <div class="kv">€1,934</div>
-          <div class="kbadge dn">↓ 2.3%</div>
-        </div>
-        <!-- bar chart -->
-        <div class="db-chart">
-          <div class="chart-label">Monthly Revenue</div>
-          <div class="bars-row">
-            <div class="mb c2" style="height:42%"></div>
-            <div class="mb c2" style="height:55%"></div>
-            <div class="mb c2" style="height:48%"></div>
-            <div class="mb c3" style="height:68%"></div>
-            <div class="mb c2" style="height:60%"></div>
-            <div class="mb ca" style="height:86%"></div>
-            <div class="mb c2" style="height:70%"></div>
-            <div class="mb c1" style="height:95%"></div>
-          </div>
-        </div>
-        <!-- sparkline donut -->
-        <div class="db-kpi" style="display:flex;flex-direction:column;justify-content:center;">
-          <div class="kl">Category Mix</div>
-          <div class="mini-donut-row" style="margin-top:8px;">
-            <svg width="52" height="52" viewBox="0 0 52 52">
-              <circle cx="26" cy="26" r="20" fill="none" stroke="#E4E0D8" stroke-width="8"/>
-              <circle cx="26" cy="26" r="20" fill="none" stroke="#D4581A" stroke-width="8"
-                stroke-dasharray="72 126" stroke-dashoffset="31" stroke-linecap="round"/>
-              <circle cx="26" cy="26" r="20" fill="none" stroke="#1A4FD4" stroke-width="8"
-                stroke-dasharray="38 126" stroke-dashoffset="-41" stroke-linecap="round"/>
-            </svg>
-            <div class="donut-leg">
-              <div class="dl"><div class="dld" style="background:#D4581A"></div>Online 57%</div>
-              <div class="dl"><div class="dld" style="background:#1A4FD4"></div>Store 30%</div>
-              <div class="dl"><div class="dld" style="background:#E4E0D8"></div>Other 13%</div>
-            </div>
-          </div>
-        </div>
-        <!-- area sparkline full width -->
-        <div class="db-chart full">
-          <div class="chart-label">Pipeline Forecast</div>
-          <svg class="area-chart" viewBox="0 0 460 56" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="ag" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="#D4581A" stop-opacity=".2"/>
-                <stop offset="100%" stop-color="#D4581A" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path d="M0,48 40,40 80,42 120,30 160,34 200,20 240,24 280,14 320,18 360,8 400,12 460,4 L460,56 L0,56Z" fill="url(#ag)"/>
-            <path d="M0,48 40,40 80,42 120,30 160,34 200,20 240,24 280,14 320,18 360,8 400,12 460,4" stroke="#D4581A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
+        <div class="spec-row"><div class="spec-key">focus</div><div class="spec-val">Power BI, DAX, Power Query</div></div>
+        <div class="spec-row"><div class="spec-key">also</div><div class="spec-val">Power Automate, Python, AI</div></div>
+        <div class="spec-row"><div class="spec-key">industry</div><div class="spec-val">multiple sectors</div></div>
+        <div class="spec-row"><div class="spec-key">language</div><div class="spec-val">EN / PL</div></div>
+        <div class="spec-row"><div class="spec-key">github</div><div class="spec-val" style="color:var(--teal)">patspychaj</div></div>
+        <div class="spec-row"><div class="spec-key">status</div><div class="spec-val"><span class="spec-pill">open to freelance</span></div></div>
       </div>
-    </div>
-    <!-- floating annotations -->
-    <div class="annotation ann-1">8pt grid system</div>
-    <div class="annotation ann-2">Accent = action signal</div>
-    <div class="annotation ann-3">Hierarchy via weight, not size</div>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="marquee">
-  <div class="mq-track">
-    <div class="mq-item">Visual Hierarchy</div>
-    <div class="mq-item">Color Semantics</div>
-    <div class="mq-item">Cognitive Load Reduction</div>
-    <div class="mq-item">Information Architecture</div>
-    <div class="mq-item">Micro-interactions</div>
-    <div class="mq-item">Grid Systems</div>
-    <div class="mq-item">Typography Scale</div>
-    <div class="mq-item">Accessibility</div>
-    <div class="mq-item">Visual Hierarchy</div>
-    <div class="mq-item">Color Semantics</div>
-    <div class="mq-item">Cognitive Load Reduction</div>
-    <div class="mq-item">Information Architecture</div>
-    <div class="mq-item">Micro-interactions</div>
-    <div class="mq-item">Grid Systems</div>
-    <div class="mq-item">Typography Scale</div>
-    <div class="mq-item">Accessibility</div>
+    </section>
   </div>
 </div>
 
-<!-- ══ DESIGN PHILOSOPHY ══ -->
-<section class="section reveal" id="about">
-  <div class="eyebrow"><span></span>Design philosophy</div>
-  <h2 class="section-h">Three principles<br>behind every screen</h2>
-  <div class="philosophy-grid">
-    <div class="ph-cell">
-      <div class="ph-num">01</div>
-      <div class="ph-title">Clarity before beauty</div>
-      <div class="ph-body">Every decoration that doesn't serve comprehension is noise. I start by stripping layouts to the essential, then add visual richness only where it aids perception — not to impress.</div>
-    </div>
-    <div class="ph-cell">
-      <div class="ph-num">02</div>
-      <div class="ph-title">Color as language</div>
-      <div class="ph-body">Colors carry meaning. Red means alert, green means good, accent color means "look here first." I define a semantic palette at the start of each project and enforce it without exception.</div>
-    </div>
-    <div class="ph-cell">
-      <div class="ph-num">03</div>
-      <div class="ph-title">Designed for decisions</div>
-      <div class="ph-body">A dashboard succeeds when a user can open it and act within 30 seconds. I design information flows to support decision-making paths, not just display data.</div>
-    </div>
-  </div>
-</section>
+<div class="divider"></div>
 
-<!-- ══ WORK ══ -->
-<section class="section" id="work" style="padding-top:0;">
-  <div class="work-header reveal">
-    <div>
-      <div class="eyebrow"><span></span>Selected work</div>
-      <h2 class="section-h">Dashboard case studies</h2>
+<!-- DASHBOARDS -->
+<div class="wrapper">
+  <section class="section reveal" id="dashboards">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Power BI dashboards</span>
+      <span class="section-line"></span>
     </div>
-    <a href="#" class="view-all">All projects →</a>
-  </div>
+    <div class="work-grid">
 
-  <!-- ── FEATURED PROJECT 1 ── -->
-  <div class="proj-card featured reveal">
-    <div class="proj-visual dark" style="position:relative;">
-      <div class="pv-frame" style="background:#1C1C1E;border-color:rgba(255,255,255,.08);">
-        <div class="pv-bar" style="background:#252528;border-color:rgba(255,255,255,.08);">
-          <div class="pvb-dot" style="background:#FF453A"></div>
-          <div class="pvb-dot" style="background:#FFD60A"></div>
-          <div class="pvb-dot" style="background:#32D74B"></div>
-          <span style="font-size:10px;color:rgba(255,255,255,.3);margin-left:auto;margin-right:auto;">Sales Intelligence · Live</span>
-        </div>
-        <div class="pv-sidebar" style="background:#252528;border-color:rgba(255,255,255,.06);">
-          <div class="pv-sicon active" style="background:var(--accent)"></div>
-          <div class="pv-sicon" style="background:rgba(255,255,255,.1)"></div>
-          <div class="pv-sicon" style="background:rgba(255,255,255,.1)"></div>
-          <div class="pv-sicon" style="background:rgba(255,255,255,.1)"></div>
-        </div>
-        <div class="pv-content" style="background:#1C1C1E;">
-          <div style="display:flex;gap:7px;">
-            <div style="flex:1;background:#252528;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,.06);">
-              <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;">Revenue</div>
-              <div style="font-family:var(--font-display);font-size:22px;color:white;letter-spacing:-.03em;margin-top:3px;">€8.3M</div>
-              <div style="font-size:9px;color:#32D74B;margin-top:4px;">↑ 18.4%</div>
+      <div class="work-card featured">
+        <div class="fc-left">
+          <div class="card-eyebrow">featured · sales</div>
+          <div class="card-title">Sales Performance Report</div>
+          <div class="card-desc">Multi-region sales report with drill-through to product and rep level. Built around a star schema with a custom date table and time intelligence measures. Designed for weekly leadership reviews.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="ctag">DAX</span>
+              <span class="ctag">drill-through</span>
+              <span class="ctag">time intelligence</span>
             </div>
-            <div style="flex:1;background:#252528;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,.06);">
-              <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;">Margin</div>
-              <div style="font-family:var(--font-display);font-size:22px;color:white;letter-spacing:-.03em;margin-top:3px;">34.2%</div>
-              <div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:4px;">→ stable</div>
-            </div>
-            <div style="flex:1;background:var(--accent);border-radius:8px;padding:10px;">
-              <div style="font-size:9px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;">Target</div>
-              <div style="font-family:var(--font-display);font-size:22px;color:white;letter-spacing:-.03em;margin-top:3px;">91%</div>
-              <div style="font-size:9px;color:rgba(255,255,255,.7);margin-top:4px;">On track</div>
-            </div>
+            <span class="card-arrow">→</span>
           </div>
-          <div style="flex:1;background:#252528;border-radius:8px;border:1px solid rgba(255,255,255,.06);padding:10px;overflow:hidden;">
-            <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Weekly Trend</div>
-            <svg viewBox="0 0 300 52" width="100%" height="40" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="dg2" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#D4581A" stop-opacity=".4"/>
-                  <stop offset="100%" stop-color="#D4581A" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <path d="M0,44 30,38 60,40 90,28 120,32 150,18 180,22 210,12 240,16 270,6 300,4 L300,52 L0,52Z" fill="url(#dg2)"/>
-              <path d="M0,44 30,38 60,40 90,28 120,32 150,18 180,22 210,12 240,16 270,6 300,4" stroke="#D4581A" stroke-width="1.5" fill="none"/>
-            </svg>
-          </div>
-          <div style="background:#252528;border-radius:8px;border:1px solid rgba(255,255,255,.06);padding:10px;">
-            <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Top Regions</div>
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <div style="display:flex;align-items:center;gap:8px;font-size:9px;color:rgba(255,255,255,.5);">
-                <span style="width:40px">Warsaw</span>
-                <div style="flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.08);"><div style="width:84%;height:100%;background:var(--accent);border-radius:100px;"></div></div>
-                <span>84%</span>
+        </div>
+        <div class="fc-right">
+          <div class="db-mock">
+            <div class="db-topbar">
+              <div class="db-d" style="background:#2A8C7A"></div>
+              <div class="db-d" style="background:var(--teal-mid)"></div>
+              <div class="db-d" style="background:var(--rule)"></div>
+              <div class="db-title">Sales Performance · FY2025</div>
+            </div>
+            <div class="db-body">
+              <div class="db-krow">
+                <div class="db-k"><div class="db-kv" style="color:var(--teal)">€8.3M</div><div class="db-kl">Revenue</div></div>
+                <div class="db-k"><div class="db-kv">4,291</div><div class="db-kl">Orders</div></div>
+                <div class="db-k"><div class="db-kv">34.2%</div><div class="db-kl">Margin</div></div>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:9px;color:rgba(255,255,255,.5);">
-                <span style="width:40px">Kraków</span>
-                <div style="flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.08);"><div style="width:61%;height:100%;background:#1A4FD4;border-radius:100px;"></div></div>
-                <span>61%</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;font-size:9px;color:rgba(255,255,255,.5);">
-                <span style="width:40px">Gdańsk</span>
-                <div style="flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.08);"><div style="width:45%;height:100%;background:#32D74B;border-radius:100px;"></div></div>
-                <span>45%</span>
+              <div class="db-chart">
+                <div class="dbr" style="height:40%"></div><div class="dbr md" style="height:55%"></div>
+                <div class="dbr" style="height:48%"></div><div class="dbr hi" style="height:72%"></div>
+                <div class="dbr" style="height:52%"></div><div class="dbr md" style="height:64%"></div>
+                <div class="dbr hi" style="height:88%"></div><div class="dbr" style="height:60%"></div>
+                <div class="dbr md" style="height:70%"></div><div class="dbr hi" style="height:95%"></div>
+                <div class="dbr" style="height:55%"></div><div class="dbr" style="height:44%"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- design chips -->
-      <div class="design-chip" style="top:16px;right:16px;">Dark theme · Low eye strain</div>
-      <div class="design-chip dc-accent" style="bottom:56px;left:16px;">Accent = primary KPI focus</div>
-    </div>
-    <div class="proj-info">
-      <div class="proj-tags">
-        <span class="ptag filled">Sales</span>
-        <span class="ptag">Power BI</span>
-        <span class="ptag">Dark UI</span>
-      </div>
-      <div class="proj-title">Sales Intelligence<br>Command Center</div>
-      <div class="proj-desc">A real-time executive dashboard for a retail group operating across 8 cities. Designed specifically for war-room reviews — full dark theme, high contrast KPIs, and a visual hierarchy that gets to the point in under 10 seconds.</div>
-      <div class="design-decisions">
-        <div class="dd-label">Design decisions</div>
-        <div class="dd-item">
-          <div class="dd-icon">🌑</div>
-          <div class="dd-text">
-            <strong>Dark theme chosen for focus, not fashion</strong>
-            <span>Used in a dedicated screen room. Dark reduces ambient glare and keeps attention on numbers.</span>
-          </div>
-        </div>
-        <div class="dd-item">
-          <div class="dd-icon">🎯</div>
-          <div class="dd-text">
-            <strong>Single accent color = one call to action</strong>
-            <span>Orange is reserved exclusively for the metric that requires attention — never used decoratively.</span>
-          </div>
-        </div>
-        <div class="dd-item">
-          <div class="dd-icon">📐</div>
-          <div class="dd-text">
-            <strong>3-column KPI strip at the top</strong>
-            <span>Eye-tracking research shows users scan top-left first. Critical metrics are placed in F-pattern reading order.</span>
-          </div>
-        </div>
-      </div>
-      <a href="#" class="proj-link">View full case study <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H5M12 2v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-  </div>
 
-  <!-- ── 2-COL CARDS ── -->
-  <div class="cards-2col" style="margin-top:20px;">
-
-    <!-- Card A -->
-    <div class="proj-card compact reveal" style="--d:.1s">
-      <div class="proj-visual blue" style="height:340px;position:relative;">
-        <div class="pv-frame">
-          <div class="pv-bar">
-            <div class="pvb-dot" style="background:#FF5F57"></div>
-            <div class="pvb-dot" style="background:#FFBD2E"></div>
-            <div class="pvb-dot" style="background:#28CA41"></div>
-            <span style="font-size:10px;color:var(--muted);margin:0 auto;">Financial Planning · FY2025</span>
-          </div>
-          <div class="pv-content">
-            <div style="display:flex;gap:7px;">
-              <div class="db-kpi" style="flex:1;padding:10px 12px;">
-                <div class="kl">Budget</div>
-                <div class="kv" style="font-size:20px;color:var(--blue)">€12.8M</div>
-              </div>
-              <div class="db-kpi" style="flex:1;padding:10px 12px;">
-                <div class="kl">Spent</div>
-                <div class="kv" style="font-size:20px;">91%</div>
-              </div>
-            </div>
-            <div style="background:white;border:1px solid var(--rule);border-radius:8px;padding:10px;flex:1;">
-              <div class="chart-label">Dept. Budgets vs. Actuals</div>
-              <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px;">
-                <div>
-                  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px;"><span>Marketing</span><span>94%</span></div>
-                  <div style="height:6px;border-radius:100px;background:var(--rule);"><div style="width:94%;height:100%;background:var(--blue);border-radius:100px;"></div></div>
-                </div>
-                <div>
-                  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px;"><span>Engineering</span><span>78%</span></div>
-                  <div style="height:6px;border-radius:100px;background:var(--rule);"><div style="width:78%;height:100%;background:var(--blue);border-radius:100px;opacity:.6;"></div></div>
-                </div>
-                <div>
-                  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px;"><span>HR</span><span>62%</span></div>
-                  <div style="height:6px;border-radius:100px;background:var(--rule);"><div style="width:62%;height:100%;background:var(--blue);border-radius:100px;opacity:.4;"></div></div>
-                </div>
-                <div>
-                  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px;"><span>Ops</span><span>103%</span></div>
-                  <div style="height:6px;border-radius:100px;background:var(--rule);"><div style="width:100%;height:100%;background:var(--accent);border-radius:100px;"></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <a href="#" class="work-card">
+        <div class="card-eyebrow">finance</div>
+        <div class="card-title">Budget vs Actuals Tracker</div>
+        <div class="card-desc">Department-level budget monitoring with variance calculation and over-budget alerting. Row-level security so each department head sees only their data.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="ctag">RLS</span><span class="ctag am">variance</span><span class="ctag">paginated</span></div>
+          <span class="card-arrow">→</span>
         </div>
-        <div class="design-chip dc-blue" style="bottom:16px;right:16px;">Blue = neutral/informational</div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-tags"><span class="ptag filled">Finance</span><span class="ptag">Budget vs Actuals</span></div>
-        <div class="proj-title">Financial Planning Dashboard</div>
-        <div class="proj-desc">Budget vs actuals with over-budget alert system. Red only appears when a department exceeds 100% — maintaining signal value.</div>
-        <div class="dd-item" style="padding:10px 0 0;">
-          <div class="dd-icon">🚨</div>
-          <div class="dd-text"><strong>Alert-only red</strong><span>Red is never used in the base state — appears exclusively when thresholds are breached, preserving its attention value.</span></div>
+      </a>
+
+      <a href="#" class="work-card">
+        <div class="card-eyebrow">hr</div>
+        <div class="card-title">Headcount & Retention Report</div>
+        <div class="card-desc">Monthly headcount tracking with attrition rate, tenure distribution, and a cohort retention table built in DAX. Connects to HR system via REST API connector.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="ctag vi">cohort</span><span class="ctag">REST API</span><span class="ctag">DAX</span></div>
+          <span class="card-arrow">→</span>
         </div>
-        <a href="#" class="proj-link" style="margin-top:20px;">Case study →</a>
-      </div>
-    </div>
+      </a>
 
-    <!-- Card B -->
-    <div class="proj-card compact reveal" style="--d:.2s">
-      <div class="proj-visual green" style="height:340px;position:relative;">
-        <div class="pv-frame">
-          <div class="pv-bar">
-            <div class="pvb-dot" style="background:#FF5F57"></div>
-            <div class="pvb-dot" style="background:#FFBD2E"></div>
-            <div class="pvb-dot" style="background:#28CA41"></div>
-            <span style="font-size:10px;color:var(--muted);margin:0 auto;">HR Analytics · People</span>
-          </div>
-          <div class="pv-content">
-            <div style="display:flex;gap:7px;">
-              <div class="db-kpi" style="flex:1;padding:10px 12px;background:#2E7D52;border-color:transparent;">
-                <div class="kl" style="color:rgba(255,255,255,.5)">Headcount</div>
-                <div class="kv" style="color:white;font-size:20px;">348</div>
-              </div>
-              <div class="db-kpi" style="flex:1;padding:10px 12px;">
-                <div class="kl">Retention</div>
-                <div class="kv" style="font-size:20px;color:var(--green)">91%</div>
-              </div>
-              <div class="db-kpi" style="flex:1;padding:10px 12px;">
-                <div class="kl">Open roles</div>
-                <div class="kv" style="font-size:20px;">14</div>
-              </div>
-            </div>
-            <div style="background:white;border:1px solid var(--rule);border-radius:8px;padding:10px;flex:1;">
-              <div class="chart-label">Retention by Department</div>
-              <div style="display:flex;align-items:flex-end;gap:6px;height:60px;">
-                <div style="flex:1;background:#2E7D52;border-radius:4px 4px 0 0;height:95%;"></div>
-                <div style="flex:1;background:rgba(46,125,82,.5);border-radius:4px 4px 0 0;height:82%;"></div>
-                <div style="flex:1;background:rgba(46,125,82,.35);border-radius:4px 4px 0 0;height:76%;"></div>
-                <div style="flex:1;background:rgba(212,88,26,.5);border-radius:4px 4px 0 0;height:64%;"></div>
-                <div style="flex:1;background:rgba(46,125,82,.5);border-radius:4px 4px 0 0;height:88%;"></div>
-                <div style="flex:1;background:rgba(46,125,82,.35);border-radius:4px 4px 0 0;height:71%;"></div>
-              </div>
-            </div>
-          </div>
+      <a href="#" class="work-card">
+        <div class="card-eyebrow">operations</div>
+        <div class="card-title">Supply Chain Monitor</div>
+        <div class="card-desc">Delivery performance, supplier scorecards, and stock level tracking across 6 warehouses. Incremental refresh configured to handle daily volumes without full reload.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="ctag">incremental refresh</span><span class="ctag am">composite model</span></div>
+          <span class="card-arrow">→</span>
         </div>
-        <div class="design-chip dc-green" style="top:16px;left:16px;">Green palette = people/growth</div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-tags"><span class="ptag filled">HR</span><span class="ptag">People Analytics</span></div>
-        <div class="proj-title">People & Retention Analytics</div>
-        <div class="proj-desc">HR dashboard with intentional color personality — green palette reinforces the human, growth-oriented context of the data.</div>
-        <div class="dd-item" style="padding:10px 0 0;">
-          <div class="dd-icon">🎨</div>
-          <div class="dd-text"><strong>Palette matched to context</strong><span>Green conveys growth and wellbeing — emotionally appropriate for an HR audience, not just visually pleasant.</span></div>
-        </div>
-        <a href="#" class="proj-link" style="margin-top:20px;">Case study →</a>
-      </div>
-    </div>
+      </a>
 
-  </div>
-</section>
-
-<!-- ══ PROCESS ══ -->
-<section class="section process-section reveal" id="process">
-  <div class="eyebrow"><span></span>Design process</div>
-  <h2 class="section-h">From messy data<br>to clear decisions</h2>
-  <p class="section-sub">A repeatable design system applied to every engagement — so quality is consistent, not accidental.</p>
-  <div class="process-timeline">
-    <div class="pt-step">
-      <div class="pt-num">1</div>
-      <div class="pt-title">Discovery</div>
-      <div class="pt-body">Who reads this? What decision does it support? What do they do in the next 5 minutes after opening it?</div>
     </div>
-    <div class="pt-step">
-      <div class="pt-num">2</div>
-      <div class="pt-title">Information arch.</div>
-      <div class="pt-body">Grouping metrics by decision type. Establishing visual hierarchy before touching Power BI.</div>
-    </div>
-    <div class="pt-step">
-      <div class="pt-num">3</div>
-      <div class="pt-title">Color system</div>
-      <div class="pt-body">Defining semantic palette: accent, alert, neutral, positive. Rules before pixels.</div>
-      <div class="color-row">
-        <div class="cswatch" style="background:#D4581A"></div>
-        <div class="cswatch" style="background:#2E7D52"></div>
-        <div class="cswatch" style="background:#C0392B"></div>
-        <div class="cswatch" style="background:#1A4FD4"></div>
-        <div class="cswatch" style="background:rgba(255,255,255,.2)"></div>
-      </div>
-    </div>
-    <div class="pt-step">
-      <div class="pt-num">4</div>
-      <div class="pt-title">Prototype</div>
-      <div class="pt-body">Figma wireframe tested with 2–3 actual users before building in Power BI. No wasted dev time.</div>
-    </div>
-    <div class="pt-step">
-      <div class="pt-num">5</div>
-      <div class="pt-title">Deliver & refine</div>
-      <div class="pt-body">Handover with a design spec doc. 2 weeks of supported refinement post-launch.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ TOOLS ══ -->
-<section class="section reveal" style="padding-top:80px;padding-bottom:80px;">
-  <div class="eyebrow"><span></span>Tools & skills</div>
-  <h2 class="section-h">The full stack</h2>
-  <div class="tools-row">
-    <div class="tool-pill"><span class="tool-icon">📊</span> Power BI Desktop</div>
-    <div class="tool-pill"><span class="tool-icon">🎨</span> Figma</div>
-    <div class="tool-pill"><span class="tool-icon">🧩</span> DAX</div>
-    <div class="tool-pill"><span class="tool-icon">🔄</span> Power Query</div>
-    <div class="tool-pill"><span class="tool-icon">☁️</span> Azure Fabric</div>
-    <div class="tool-pill"><span class="tool-icon">🗄️</span> SQL / T-SQL</div>
-    <div class="tool-pill"><span class="tool-icon">♿</span> WCAG Accessibility</div>
-    <div class="tool-pill"><span class="tool-icon">📐</span> Design systems</div>
-    <div class="tool-pill"><span class="tool-icon">🧪</span> User testing</div>
-    <div class="tool-pill"><span class="tool-icon">📋</span> Information architecture</div>
-  </div>
-</section>
+  </section>
+</div>
 
 <div class="divider"></div>
 
-<!-- ══ TESTIMONIAL ══ -->
-<section class="section testi-section reveal" style="padding:80px 52px;">
-  <div style="text-align:center;">
-    <div class="eyebrow" style="justify-content:center;"><span></span>What clients say<span></span></div>
-  </div>
-  <div class="testi-card">
-    <div class="testi-quote">Marta didn't just build us a dashboard. She redesigned how our leadership team reads data. We went from 90-minute review meetings to 20-minute ones.</div>
-    <div class="testi-author">
-      <div class="ta-avatar">🧑‍💼</div>
-      <div>
-        <div class="ta-name">Tomasz Wierzbicki</div>
-        <div class="ta-role">Head of Strategy, Orbis Group · Warsaw</div>
-      </div>
+<!-- CUSTOM VISUALS -->
+<div class="wrapper">
+  <section class="section reveal" id="visuals">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Custom visuals</span>
+      <span class="section-line"></span>
     </div>
-  </div>
-</section>
+    <div class="visuals-grid">
 
-<!-- ══ CONTACT ══ -->
-<section class="section" id="contact">
-  <div class="contact-split reveal">
-    <div>
-      <div class="eyebrow"><span></span>Let's work together</div>
-      <h2 class="contact-h">Got a dashboard<br>that needs a<br><em>redesign?</em></h2>
-      <p class="section-sub" style="margin-top:20px;">Whether it's a full design project or a quick audit — I'm happy to take a look at what you're working with.</p>
+      <div class="visual-card">
+        <div class="visual-preview vp-t">
+          <div class="lol-wrap">
+            <div class="lol"><div class="lol-s" style="height:28px"></div><div class="lol-d"></div></div>
+            <div class="lol"><div class="lol-s" style="height:52px"></div><div class="lol-d"></div></div>
+            <div class="lol"><div class="lol-s" style="height:38px"></div><div class="lol-d"></div></div>
+            <div class="lol"><div class="lol-s" style="height:65px"></div><div class="lol-d"></div></div>
+            <div class="lol"><div class="lol-s" style="height:34px"></div><div class="lol-d"></div></div>
+            <div class="lol"><div class="lol-s" style="height:48px"></div><div class="lol-d"></div></div>
+          </div>
+        </div>
+        <div class="visual-name">Lollipop Chart</div>
+        <div class="visual-desc">Cleaner alternative to a bar chart when comparing many categories. Reduces visual weight while keeping precise readability.</div>
+        <span class="vtag vtag-t">Power BI visual</span>
+      </div>
+
+      <div class="visual-card">
+        <div class="visual-preview vp-v">
+          <div class="hm-wrap">
+            <div class="hm-c" style="background:#EEEAFD"></div><div class="hm-c" style="background:#C8C0F8"></div><div class="hm-c" style="background:#9D92F4"></div><div class="hm-c" style="background:#6B5CF0"></div><div class="hm-c" style="background:#EEEAFD"></div><div class="hm-c" style="background:#C8C0F8"></div><div class="hm-c" style="background:#9D92F4"></div><div class="hm-c" style="background:#C8C0F8"></div>
+            <div class="hm-c" style="background:#C8C0F8"></div><div class="hm-c" style="background:#6B5CF0"></div><div class="hm-c" style="background:#9D92F4"></div><div class="hm-c" style="background:#C8C0F8"></div><div class="hm-c" style="background:#EEEAFD"></div><div class="hm-c" style="background:#9D92F4"></div><div class="hm-c" style="background:#EEEAFD"></div><div class="hm-c" style="background:#6B5CF0"></div>
+            <div class="hm-c" style="background:#9D92F4"></div><div class="hm-c" style="background:#EEEAFD"></div><div class="hm-c" style="background:#C8C0F8"></div><div class="hm-c" style="background:#6B5CF0"></div><div class="hm-c" style="background:#9D92F4"></div><div class="hm-c" style="background:#EEEAFD"></div><div class="hm-c" style="background:#C8C0F8"></div><div class="hm-c" style="background:#9D92F4"></div>
+          </div>
+        </div>
+        <div class="visual-name">Calendar Heatmap</div>
+        <div class="visual-desc">Daily value intensity mapped across a calendar grid. Useful for spotting patterns in time-series data at a glance.</div>
+        <span class="vtag vtag-v">Power BI visual</span>
+      </div>
+
+      <div class="visual-card">
+        <div class="visual-preview vp-a">
+          <div class="wf-wrap">
+            <div class="wf-b" style="height:70%;background:var(--amber)"></div>
+            <div class="wf-b" style="height:18%;background:#EDD5A8;margin-bottom:52%"></div>
+            <div class="wf-b" style="height:28%;background:var(--amber);margin-bottom:42%"></div>
+            <div class="wf-b" style="height:14%;background:#EDD5A8;margin-bottom:56%"></div>
+            <div class="wf-b" style="height:82%;background:#C47B2B"></div>
+          </div>
+        </div>
+        <div class="visual-name">Custom Waterfall</div>
+        <div class="visual-desc">Extended waterfall with subtotal bars, conditional colouring, and data label control beyond what the native visual offers.</div>
+        <span class="vtag vtag-a">Power BI visual</span>
+      </div>
+
+      <div class="visual-card">
+        <div class="visual-preview vp-t">
+          <div class="sm-wrap">
+            <div class="sm-p"><div class="sm-l">Region A</div><div class="sm-b-row"><div class="sm-b" style="height:55%;background:var(--teal-mid)"></div><div class="sm-b" style="height:88%;background:var(--teal)"></div><div class="sm-b" style="height:66%;background:var(--teal-mid)"></div></div></div>
+            <div class="sm-p"><div class="sm-l">Region B</div><div class="sm-b-row"><div class="sm-b" style="height:44%;background:var(--teal)"></div><div class="sm-b" style="height:38%;background:var(--teal-mid)"></div><div class="sm-b" style="height:77%;background:var(--teal)"></div></div></div>
+            <div class="sm-p"><div class="sm-l">Region C</div><div class="sm-b-row"><div class="sm-b" style="height:70%;background:var(--teal-mid)"></div><div class="sm-b" style="height:50%;background:var(--teal-mid)"></div><div class="sm-b" style="height:92%;background:var(--teal)"></div></div></div>
+            <div class="sm-p"><div class="sm-l">Region D</div><div class="sm-b-row"><div class="sm-b" style="height:60%;background:var(--teal)"></div><div class="sm-b" style="height:42%;background:var(--teal-mid)"></div><div class="sm-b" style="height:80%;background:var(--teal)"></div></div></div>
+          </div>
+        </div>
+        <div class="visual-name">Small Multiples</div>
+        <div class="visual-desc">Repeatable panels comparing the same metric across dimensions simultaneously, without switching filters.</div>
+        <span class="vtag vtag-t">Power BI visual</span>
+      </div>
+
+      <div class="visual-card">
+        <div class="visual-preview vp-a">
+          <div class="bullet-wrap">
+            <div class="bullet-row"><div class="bullet-lbl">Revenue</div><div class="bullet-track"><div class="bullet-fill" style="width:78%;background:var(--amber)"></div><div class="bullet-mark" style="left:88%"></div></div></div>
+            <div class="bullet-row"><div class="bullet-lbl">Margin</div><div class="bullet-track"><div class="bullet-fill" style="width:52%;background:#EDD5A8"></div><div class="bullet-mark" style="left:68%"></div></div></div>
+            <div class="bullet-row"><div class="bullet-lbl">Orders</div><div class="bullet-track" style="background:#EDD5A8"><div class="bullet-fill" style="width:95%;background:var(--amber)"></div><div class="bullet-mark" style="left:80%;background:white"></div></div></div>
+          </div>
+        </div>
+        <div class="visual-name">Bullet Chart</div>
+        <div class="visual-desc">Compact KPI visual showing actual vs target vs qualitative range. More density than a gauge with far less space used.</div>
+        <span class="vtag vtag-a">Power BI visual</span>
+      </div>
+
+      <div class="visual-card" style="opacity:0.5;">
+        <div class="visual-preview" style="background:var(--rule);border:1px dashed var(--faint);">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--faint)">in progress</span>
+        </div>
+        <div class="visual-name">Slope Chart</div>
+        <div class="visual-desc">Two-point comparison for showing change between two periods or states. Under development.</div>
+        <span class="vtag" style="background:var(--rule);color:var(--faint)">coming soon</span>
+      </div>
+
     </div>
-    <div class="contact-form">
-      <div class="cf-field">
-        <label>Your name</label>
-        <input type="text" placeholder="Aleksandra Nowak">
-      </div>
-      <div class="cf-field">
-        <label>Email</label>
-        <input type="email" placeholder="aleksandra@company.pl">
-      </div>
-      <div class="cf-field">
-        <label>Tell me about your project</label>
-        <textarea rows="4" placeholder="We have an existing Power BI dashboard that's hard to read..."></textarea>
-      </div>
-      <button class="btn-solid" style="align-self:flex-start;border:none;cursor:none;">
-        Send message
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+  </section>
+</div>
+
+<div class="divider"></div>
+
+<!-- FUNCTIONS -->
+<div class="wrapper">
+  <section class="section reveal" id="functions">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">User defined functions</span>
+      <span class="section-line"></span>
     </div>
-  </div>
-</section>
+    <div class="fn-list">
+      <a href="https://github.com/patspychaj" class="fn-item">
+        <div class="fn-no">01</div>
+        <div class="fn-nm">WORKINGDAYS <span class="fb fb-d">DAX</span></div>
+        <div class="fn-de">Returns working days between two dates, excluding weekends and a configurable holiday table.</div>
+        <div class="fn-arr">→</div>
+      </a>
+      <a href="https://github.com/patspychaj" class="fn-item">
+        <div class="fn-no">02</div>
+        <div class="fn-nm">ROLLINGAVG <span class="fb fb-d">DAX</span></div>
+        <div class="fn-de">N-period rolling average with automatic boundary handling. Configurable window size via parameter.</div>
+        <div class="fn-arr">→</div>
+      </a>
+      <a href="https://github.com/patspychaj" class="fn-item">
+        <div class="fn-no">03</div>
+        <div class="fn-nm">fnCleanText <span class="fb fb-p">Power Query</span></div>
+        <div class="fn-de">Removes non-printable characters, normalises whitespace, and strips encoding artifacts from text fields.</div>
+        <div class="fn-arr">→</div>
+      </a>
+      <a href="https://github.com/patspychaj" class="fn-item">
+        <div class="fn-no">04</div>
+        <div class="fn-nm">fnExpandJSON <span class="fb fb-p">Power Query</span></div>
+        <div class="fn-de">Recursively expands nested JSON columns into a flat table. Handles mixed-depth structures and nulls.</div>
+        <div class="fn-arr">→</div>
+      </a>
+      <a href="https://github.com/patspychaj" class="fn-item">
+        <div class="fn-no">05</div>
+        <div class="fn-nm">date_table_generator <span class="fb fb-y">Python</span></div>
+        <div class="fn-de">Generates a complete date dimension table as CSV or dataframe. Includes fiscal year, ISO week, and Polish public holidays.</div>
+        <div class="fn-arr">→</div>
+      </a>
+      <a href="https://github.com/patspychaj" class="fn-item">
+        <div class="fn-no">06</div>
+        <div class="fn-nm">pbi_theme_builder <span class="fb fb-y">Python</span></div>
+        <div class="fn-de">CLI tool that generates a valid Power BI theme JSON from a colour palette input. Outputs all visual defaults.</div>
+        <div class="fn-arr">→</div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<div class="divider"></div>
+
+<!-- OTHER -->
+<div class="wrapper">
+  <section class="section reveal" id="other">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Other work</span>
+      <span class="section-line"></span>
+    </div>
+    <div class="other-grid">
+      <a href="#" class="other-card"><div class="other-icon oi-t">⚡</div><div class="other-title">Power Automate flows</div><div class="other-desc">Automated approval workflows, scheduled report distribution, and SharePoint-to-Teams notification pipelines in daily production use.</div><div class="other-link">view flows →</div></a>
+      <a href="#" class="other-card"><div class="other-icon oi-v">🤖</div><div class="other-title">AI / LLM experiments</div><div class="other-desc">Practical uses of language models in data workflows: auto-generating DAX documentation, natural language query over Power BI datasets, structured extraction from unstructured text.</div><div class="other-link">read notes →</div></a>
+      <a href="#" class="other-card"><div class="other-icon oi-a">📋</div><div class="other-title">Templates & resources</div><div class="other-desc">Free downloadable Power BI templates: a date table, KPI card layout, and a report theme starter kit. All on GitHub with documentation.</div><div class="other-link">download →</div></a>
+      <a href="#" class="other-card"><div class="other-icon oi-t">🔗</div><div class="other-title">API connectors</div><div class="other-desc">Custom Power Query connectors for APIs without native Power BI support — Notion, Airtable, and a generic REST pagination handler.</div><div class="other-link">view on github →</div></a>
+      <a href="#" class="other-card"><div class="other-icon oi-r">📝</div><div class="other-title">Writing</div><div class="other-desc">Technical notes on DAX patterns, Power Query M quirks, and data modelling decisions. Not a blog — just a place to write things down before I forget them.</div><div class="other-link">read →</div></a>
+      <a href="#" class="other-card"><div class="other-icon oi-v">📦</div><div class="other-title">Fabric / Azure</div><div class="other-desc">Experiments with Microsoft Fabric: Lakehouse ingestion, semantic model management via XMLA, and CI/CD for Power BI reports using GitHub Actions.</div><div class="other-link">view →</div></a>
+    </div>
+  </section>
+</div>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<div class="wrapper">
+  <section class="section reveal" id="about">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <span class="section-title">About</span>
+      <span class="section-line"></span>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a data analyst and Power BI developer based in Warsaw. I've worked across retail, finance, logistics, and HR — mostly building reporting infrastructure that didn't exist yet.</p>
+        <p>My focus is on the technical side: data modelling, DAX, and making sure the numbers are actually correct before worrying about how they look. That said, I care about how dashboards are structured and presented — a report that's hard to read is a report that doesn't get used.</p>
+        <p>This portfolio is a live document. I add things when they're finished and worth sharing, which means it's always slightly behind what I'm currently working on.</p>
+        <p>If you want to get in touch: <a href="mailto:hello@patrycjasp.com">hello@patrycjasp.com</a></p>
+      </div>
+      <div>
+        <div class="stack-group"><div class="stack-group-lbl">primary tools</div><div class="stack-items"><span class="si">Power BI Desktop</span><span class="si">DAX</span><span class="si">Power Query M</span><span class="si">Power Automate</span></div></div>
+        <div class="stack-group"><div class="stack-group-lbl">data & databases</div><div class="stack-items"><span class="si">SQL / T-SQL</span><span class="si">Azure SQL</span><span class="si">SharePoint</span><span class="si">Dataverse</span></div></div>
+        <div class="stack-group"><div class="stack-group-lbl">cloud & infra</div><div class="stack-items"><span class="si">Microsoft Fabric</span><span class="si">Azure Data Factory</span><span class="si">Power BI Service</span></div></div>
+        <div class="stack-group"><div class="stack-group-lbl">scripting & other</div><div class="stack-items"><span class="si">Python</span><span class="si">pandas</span><span class="si">Git</span><span class="si">REST APIs</span><span class="si">JSON / XML</span></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<div class="wrapper">
+  <section class="section reveal" id="contact">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <span class="section-title">Contact</span>
+      <span class="section-line"></span>
+    </div>
+    <div class="contact-row">
+      <a href="mailto:hello@patrycjasp.com" class="cc">
+        <div class="cc-ico">@</div>
+        <div><div class="cc-lbl">email</div><div class="cc-val">hello@patrycjasp.com</div></div>
+        <div class="cc-arr">→</div>
+      </a>
+      <a href="https://linkedin.com/in/patrycjasp" class="cc">
+        <div class="cc-ico">in</div>
+        <div><div class="cc-lbl">linkedin</div><div class="cc-val">patrycjasp</div></div>
+        <div class="cc-arr">→</div>
+      </a>
+      <a href="https://github.com/patspychaj" class="cc">
+        <div class="cc-ico">{}</div>
+        <div><div class="cc-lbl">github</div><div class="cc-val">patspychaj</div></div>
+        <div class="cc-arr">→</div>
+      </a>
+    </div>
+  </section>
+</div>
 
 <!-- FOOTER -->
-<footer>
-  <a href="#" class="logo">marta<sup>k</sup></a>
-  <div class="footer-links">
-    <a href="#">LinkedIn</a>
-    <a href="#">Behance</a>
-    <a href="#">Dribbble</a>
-  </div>
-  <span>© 2026 Marta Kowalski · Warsaw, PL</span>
-</footer>
+<div class="wrapper">
+  <footer>
+    <div class="fl"><div class="fl-dot"></div>patrycja spychaj · patrycjasp.com</div>
+    <div class="fr">
+      <a href="#dashboards">dashboards</a>
+      <a href="#visuals">visuals</a>
+      <a href="#functions">functions</a>
+      <a href="#other">other</a>
+    </div>
+  </footer>
+</div>
+
+<a href="#" class="back-top" id="bt">↑ top</a>
 
 <script>
-// Custom cursor
-const cur = document.getElementById('cur');
-document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px';
-  cur.style.top = e.clientY + 'px';
-});
-
-// Nav scroll
-window.addEventListener('scroll', () => {
-  document.getElementById('nav').classList.toggle('solid', window.scrollY > 50);
-});
-
-// Scroll reveal
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-// Filter buttons (no-op visual only)
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('in'); }), { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  const bt = document.getElementById('bt');
+  window.addEventListener('scroll', () => bt.classList.toggle('visible', scrollY > 400));
 </script>
 </body>
 </html>
